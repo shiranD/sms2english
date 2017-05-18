@@ -9,8 +9,9 @@ All folders contain means to split the data, train and evaluate.
    **ENG**:  you^are^going^to^see
 
    in which spaces are marked as '^' and fillers on sms side are '#'
-   * To align the data I slightly modified the script found here:
-   The script is found in
+   - To align the data I slightly modified the script found here:
+     http://www.giovannicarmantini.com/2016/01/minimum-edit-distance-in-python
+     In align folder you can align parallel sentences.
 
 2. The folder 'non-aligned corpus' contains scripts to non-aligned evaluate data.
    (training can be done with the same files as in the 'aligned corpus' folder.

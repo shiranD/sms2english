@@ -15,8 +15,8 @@ All folders contain means to split the data, train and evaluate.
 
      In *align* folder you can align parallel sentences.
 
-2. The folder *non-aligned corpus* contains scripts to non-aligned evaluate data.
-   (training can be done with the same files as in the *aligned corpus* folder)
+2. The folder *non-aligned corpus* contains scripts to non-aligned evaluate data
+   (training can be done with the same files as in the *aligned corpus* folder).
    An example for a non-aligned sentence is:
 
    **SMS**: u^r^gonna^c

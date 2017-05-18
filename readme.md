@@ -6,7 +6,7 @@ All folders contain means to split the data, train and evaluate.
 
    **SMS**: ##u^#r#^go#na^##^##c
 
-   **EN**:  you^are^going^to^see
+   **ENG**:  you^are^going^to^see
 
    in which spaces are marked as '^' and fillers on sms side are '#'
    * To align the data I slightly modified the script found here:
@@ -18,6 +18,6 @@ All folders contain means to split the data, train and evaluate.
 
    **SMS**: u^r^gonna^c
 
-   **EN**: you^are^going^to^see
+   **ENG**: you^are^going^to^see
 
 3. The folder 'linear kernel' will be described soon.

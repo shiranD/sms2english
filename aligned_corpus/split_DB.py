@@ -48,11 +48,11 @@ def chunks(l, n):
     # Yield successive n-sized chunks from l.
     for i in xrange(0, len(l), n):
         yield l[i:i+n]
-        
-db = ["sms", "en"]
-location = TBD
-orig_file1 = location + db[0] + "_flrs.al"
-orig_file2 = location + db[1] + "_flrs.al"
+
+location = sys.argv[1]        
+db = ["/sms", "/en"]
+orig_file1 = location + db[0]
+orig_file2 = location + db[1]
 
 num_lines = sum(1 for line in open(orig_file1))
 array = range(num_lines)
@@ -67,8 +67,10 @@ lines_o1 = []
 for line in f.readlines():
     line = line.lower()
     line = line.replace("\n", "")
-    all_sym.extend(list(line))
+    all_sym.extend(list(line)) 
     lines_o1.append(line)
+uniq = list(set(all_sym))
+uniq.append('</s>')
 
 sms2num, num2sms = dict_it(all_sym)
 
@@ -82,12 +84,14 @@ for line in f.readlines():
     lines_o2.append(line)
 
 en2num, num2en = dict_it(all_sym)
+uniq2 = list(set(all_sym))
+uniq2.append('</s>')
 
-print len(uniq)
-print len(uniq2)
+print "There are", len(uniq), "SMS symbols"
+print "There are", len(uniq2), "English symbols"
 
 the_dict = {"en2num": en2num, "sms2num": sms2num, "num2en": num2en, "num2sms": num2sms}
-with open("decoding", 'wb') as handle:
+with open(location+"/decoding", 'wb') as handle:
     pickle.dump(the_dict, handle)
 
 # insert indecies to form arrays
@@ -116,6 +120,6 @@ for i, (ls1, ls2) in enumerate(zip(file1,file2)):
         lst1.append(l1)
         lst2.append(l2)
     the_dict = {"X": lst1, "y": lst2}
-    with open("fold_"+str(i), 'wb') as handle:
+    with open(location+"/fold_"+str(i), 'wb') as handle:
 	    pickle.dump(the_dict, handle)
 

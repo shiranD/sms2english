@@ -1,3 +1,5 @@
+import sys
+import os
 import numpy as np
 import tabulate as tb
 import re
@@ -121,22 +123,27 @@ def make_table(word_1, word_2, D, B, bt):
  
     return table
     
-
-smsfile = TBD
-enfile = TBD
-
-smsf = open(smsfile, "r")
-enf = open(enfile, "r")
-for sms_sen, en_sen in zip(smsf, enf):
-  sms_sen = sms_sen.lower()
-  sms_sen = sms_sen.replace(" ", "^")
-  en_sen = en_sen.replace(" ", "^")
-  # the "replace" above makes spaces a symbol
-  #sms_sen = "im^gonna^go"
-  #en_sen = "i'm^going^to^go"
-  D, B = wagner_fischer(sms_sen, en_sen)
-  bt = naive_backtrace(B) 
-  edit_distance_table = make_table(sms_sen, en_sen, D, B, bt)
-  alignment_table = align(sms_sen, en_sen, bt)
-  print(tb.tabulate(alignment_table, tablefmt="orgtbl"))
-
+if len(sys.argv) < 3:
+  sys.strerr.write('Usage: aligns paralell corpus')
+  sys.exit(1)
+elif not os.path.exists(sys.argv[1]) or not os.path.exists(sys.argv[2]):
+  sys.stderr.write('Error: one of the paths is invalid')
+  sys.exit(1)
+else:
+  smsfile = sys.argv[1]
+  enfile = sys.argv[2]
+  smsf = open(smsfile, "r")
+  enf = open(enfile, "r")
+  for sms_sen, en_sen in zip(smsf, enf):
+    sms_sen = sms_sen.lower()
+    sms_sen = sms_sen.replace(" ", "^")
+    en_sen = en_sen.replace(" ", "^")
+    # the "replace" above makes spaces a symbol
+    #sms_sen = "im^gonna^go"
+    #en_sen = "i'm^going^to^go"
+    D, B = wagner_fischer(sms_sen, en_sen)
+    bt = naive_backtrace(B) 
+    edit_distance_table = make_table(sms_sen, en_sen, D, B, bt)
+    alignment_table = align(sms_sen, en_sen, bt)
+    print(tb.tabulate(alignment_table, tablefmt="orgtbl"))
+    sys.stderr.flush()

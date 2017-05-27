@@ -1,4 +1,4 @@
-# short word form normalization
+# Short Word-Form Normalization
 This project contains scripts to normalize sms text messeges.
 All folders contain means to split the data, train and evaluate.
 

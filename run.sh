@@ -49,7 +49,7 @@ rm sym_count
 
 # train
 echo '-----'
-echo 'TRAIN'
+echo 'Train'
 echo '-----'
 python aligned_corpus/train.py $dir $model_dir sms_sym en_sym
 rm sms_sym
@@ -57,6 +57,6 @@ rm en_sym
 
 # evaluate
 echo '--------'
-echo 'EVALUATE'
+echo 'Evaluate'
 echo '--------'
 python aligned_corpus/evaluate.py $dir $model_dir $results_dir

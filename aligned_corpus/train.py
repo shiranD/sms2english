@@ -4,7 +4,6 @@ Created on MAY 18 2017
 
 @author: Shiran Dudy
 """
-from __future__ import division
 import sys
 import numpy as np
 from keras.models import model_from_json

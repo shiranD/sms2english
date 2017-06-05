@@ -1,3 +1,4 @@
+from __future__ import division
 from random import randint
 import numpy as np
 

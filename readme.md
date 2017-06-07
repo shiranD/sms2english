@@ -14,7 +14,7 @@ All folders contain means to split the data, train and evaluate.
 
      http://www.giovannicarmantini.com/2016/01/minimum-edit-distance-in-python
 
-     In *align* folder you can align parallel sentences.
+     In *preprocess* folder you can align parallel sentences.
 
 2. The folder *non-aligned corpus* contains scripts to non-aligned evaluate data
    (training can be done with the same files as in the *aligned corpus* folder).

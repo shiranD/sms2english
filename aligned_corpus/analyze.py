@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on JUNE 6 2017
+
+@author: Shiran Dudy
+"""
+
 from __future__ import division
 from random import randint
 import numpy as np

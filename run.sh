@@ -8,8 +8,8 @@
 #The script assumes keras environment under tensorflow
 
 # Determine your input files of paralell corpus
-path2sms=TBD
-path2en=TBD
+path2sms="../../align/Bleualign/outputfile-s"
+path2en="../../align/Bleualign/outputfile-t"
 # apply edit distance alignenmet
 edit='no'
 
@@ -28,14 +28,13 @@ if [ $edit == 'yes' ]; then
   echo '---------------------------'
   echo 'Align sms to english corpus'
   echo '---------------------------'
-  python3 align/edit.py $path2sms $path2en > $dir/out
+  python3 preprocess/edit.py $path2sms $path2en > $dir/out
   echo '---------------------------------------'
   echo 'Split to seperate sms and english files'
   echo '---------------------------------------'
-  cat $dir/out | python align/process_edit.py $dir
+  cat $dir/out | python preprocess/process_edit.py $dir
 else
-  cp $path2sms $dir/sms
-  cp $path2en $dir/en
+  python preprocess/non_algn_preprocess.py $path2sms $path2en $dir
 fi
 
 #split_DB.py splits the corpuses to 5 folds and extract the number of unique symbols for each of the corpuses

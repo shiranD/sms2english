@@ -80,19 +80,22 @@ for fold in xrange(folds):
     # how many pred has in common with SMS (since the corpus is aligned)
     for x in sent_x[int(pad/2):]: # disregard padding
       sym_sms.append(num2sms[x])
-    # chack how many sentences don't form the same length as input
-    if len(sym_pred)!=len(sym_sms):
-      x+=1
-      continue
       
     # count same and subs correct predictions
     for idx in corr_idx:
-      if sym_sms[idx]==sym_pred[idx]:
-        idx_same.append(idx)
-      else:
+      try:
+        sym_sms[idx]
+        if sym_sms[idx]==sym_pred[idx]:
+          idx_same.append(idx)
+        else:
+          idx_subs.append(idx)
+      except:
         idx_subs.append(idx)
    
     # count overall same and subs
+    
+
+
     all_same = []
     all_subs = []
     for idx, (rl, sms) in enumerate(zip(sym_real, sym_sms)):
@@ -100,6 +103,10 @@ for fold in xrange(folds):
         all_same.append(idx)
       else:
         all_subs.append(idx)
+    # if one is longer than the other - the rest are subs
+    if len(sym_real)>len(sym_sms) or len(sym_real)<len(sym_sms):
+      for i in range(idx+1,abs(len(sym_real)-len(sym_sms))):
+        idx_subs.append(i)
 
     all_same_a+=len(all_same)
     all_subs_a+=len(all_subs)
@@ -120,13 +127,22 @@ for fold in xrange(folds):
     mrk2_st = "\033[92m\033[1m" 
     mrk2_ed = "\033[0;0m"
     for idx in idx_subs:
-      sym = sym_pred[idx]
-      new_sym = mrk2_st+sym+mrk2_ed
-      sym_pred[idx] = new_sym
-      sym = sym_sms[idx]
-      new_sym = mrk2_st+sym+mrk2_ed
-      sym_sms[idx] = new_sym
-      
+      try:
+        sym = sym_pred[idx]
+        new_sym = mrk2_st+sym+mrk2_ed
+      except:
+        pass
+      try:
+        sym_pred[idx] = new_sym
+        sym = sym_sms[idx]
+      except:
+        pass
+      try:
+        new_sym = mrk2_st+sym+mrk2_ed
+        sym_sms[idx] = new_sym
+      except:
+        pass
+
     if 1: # write a qualitative representation of results
       f.write("SMS: {0}\n".format("".join(sym_sms)))
       f.write("PRD: {0}\n".format("".join(sym_pred)))
@@ -146,7 +162,6 @@ for fold in xrange(folds):
     f.write("{0:40} {1:.3f}".format("fold correct substitution prediction", idx_subs_a/all_subs_a*100))
     f.write("\n")
     f.write("{0:40} {1:.3f}".format("fold accuracy", (idx_same_a+idx_subs_a)/(all_same_a+all_subs_a)*100))
-    f.write( "{0:40} {1}".format("omitted sentences", x))     
 
     print "\n\033[4mfold {0}\033[0;0m".format(fold)
     print "\n"
@@ -159,4 +174,3 @@ for fold in xrange(folds):
     print "{0:40} {1:.3f}".format("fold correct substitution prediction", idx_subs_a/all_subs_a*100)
     print "\n"
     print "{0:40} {1:.3f}".format("fold accuracy", (idx_same_a+idx_subs_a)/(all_same_a+all_subs_a)*100)
-    print "{0:40} {1}".format("omitted sentences", x)

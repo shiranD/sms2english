@@ -17,9 +17,10 @@ edit='no'
 dir='db'
 model_dir='models'
 results_dir='model_eval'
-mkdir $dir
-mkdir $model_dir
-mkdir $results_dir
+mkdir -p $dir
+mkdir -p $model_dir
+mkdir -p $results_dir
+mkdir -p imgs
 
 # align data
 if [ $edit == 'yes' ]; then

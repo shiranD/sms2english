@@ -10,6 +10,8 @@ from keras.models import model_from_json
 from keras.preprocessing import sequence
 import pickle
 import numpy as np
+from levels import level, plot
+import pdb
 
 # settings
 folds = 5
@@ -52,6 +54,8 @@ for fold in xrange(folds):
   all_subs_a = 0
   idx_same_a = 0
   idx_subs_a = 0
+  preva = []
+  prevu = []
   x = 0
   f = open(path2eval+"/qual_out_"+str(fold),"wb")
   for sent_pred, sent_real, sent_x in zip(y_hat, y_test, X_test_a):
@@ -73,6 +77,11 @@ for fold in xrange(folds):
       sym_pred.append(num2en[prd])
       sym_real.append(num2en[rl])
 
+    # ignore everything after eof symbol
+    idf = next((i for i, x in enumerate(sym_pred) if x=='</s>'), None)
+    if idf:
+      sym_pred = sym_pred[:idf+1]
+
     # convert X to symbols with dicts
     sym_sms = []
     idx_same = []
@@ -91,11 +100,16 @@ for fold in xrange(folds):
           idx_subs.append(idx)
       except:
         idx_subs.append(idx)
-   
-    # count overall same and subs
-    
 
+    newa, newu = level(idx_same, idx_subs, len(sym_pred))
+    if preva==[]:
+      preva = newa
+      prevu = newu
+    else:
+      preva = np.vstack((preva, newa)) 
+      prevu = np.vstack((prevu, newu))
 
+    # count overall same and subs  
     all_same = []
     all_subs = []
     for idx, (rl, sms) in enumerate(zip(sym_real, sym_sms)):
@@ -149,19 +163,20 @@ for fold in xrange(folds):
       f.write("REL: {0}\n".format("".join(sym_real)))
       f.write("\n")
   f.close()
+  plot(preva, prevu, fold)
   if 1: # print quantitative evaluation
     f = open(path2eval+"/quan_out_"+str(fold),"wb")
     f.write("\n\033[4mfold {0}\033[0;0m".format(fold))
     f.write("\n")
-    f.write("{0:40} {1}".format("total identity symbols", all_same_a))
-    f.write("{0:40} {1}".format("correctly predicted identity symbols", idx_same_a))
-    f.write("{0:40} {1:.3f}".format("fold correct identity prediction", idx_same_a/all_same_a*100))
+    f.write("{0:40} {1}\n".format("total identity symbols", all_same_a))
+    f.write("{0:40} {1}\n".format("correctly predicted identity symbols", idx_same_a))
+    f.write("{0:40} {1:.3f}\n".format("fold correct identity prediction", idx_same_a/all_same_a*100))
     f.write("\n")
-    f.write("{0:40} {1}".format("total subs symbols", all_subs_a))
-    f.write("{0:40} {1}".format("correctly predicted subs symbols", idx_subs_a))
-    f.write("{0:40} {1:.3f}".format("fold correct substitution prediction", idx_subs_a/all_subs_a*100))
+    f.write("{0:40} {1}\n".format("total subs symbols", all_subs_a))
+    f.write("{0:40} {1}\n".format("correctly predicted subs symbols", idx_subs_a))
+    f.write("{0:40} {1:.3f}\n".format("fold correct substitution prediction", idx_subs_a/all_subs_a*100))
     f.write("\n")
-    f.write("{0:40} {1:.3f}".format("fold accuracy", (idx_same_a+idx_subs_a)/(all_same_a+all_subs_a)*100))
+    f.write("{0:40} {1:.3f}\n".format("fold accuracy", (idx_same_a+idx_subs_a)/(all_same_a+all_subs_a)*100))
 
     print "\n\033[4mfold {0}\033[0;0m".format(fold)
     print "\n"

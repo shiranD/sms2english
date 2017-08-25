@@ -70,18 +70,18 @@ def align(word_1, word_2, bt):
             if word_1[i_0] == word_2[j_0]:  # no-op, same symbol
                 w_1_letter = word_1[i_0]
                 w_2_letter = word_2[j_0]
-                op = " "
+                op = "n"
             else:  # cost increased: substitution
                 w_1_letter = word_1[i_0]
                 w_2_letter = word_2[j_0]
                 op = "s"
         elif i_0 == i_1:  # insertion
-            w_1_letter = "#"
+            w_1_letter = "&"
             w_2_letter = word_2[j_0]
             op = "i"
         else: #  j_0 == j_1,  deletion
             w_1_letter = word_1[i_0]
-            w_2_letter = "*"
+            w_2_letter = "#"
             op = "d"
  
         aligned_word_1.append(w_1_letter)

@@ -57,6 +57,9 @@ for fold in xrange(folds):
   preva = []
   prevu = []
   x = 0
+  fsent = 0
+  rf_sent = 0
+  nsent = 0
   f = open(path2eval+"/qual_out_"+str(fold),"wb")
   for sent_pred, sent_real, sent_x in zip(y_hat, y_test, X_test_a):
     # for each token in y
@@ -126,6 +129,16 @@ for fold in xrange(folds):
     all_subs_a+=len(all_subs)
     idx_same_a+=len(idx_same)
     idx_subs_a+=len(idx_subs)
+
+
+    nsent+=1
+    cmpr = [i for i, j in zip(sym_pred, sym_real) if i != j]
+    if sym_real==sym_pred or cmpr==None:
+      fsent+=1
+    rf_pred = [q for q in sym_pred if q!='#']
+    rf_real = [q for q in sym_real if q!='#']
+    if rf_pred==rf_real:
+      rf_sent+=1
     
     # prepare a display
     mrk1_st = "\033[91m\033[1m"
@@ -156,7 +169,7 @@ for fold in xrange(folds):
         sym_sms[idx] = new_sym
       except:
         pass
-
+    
     if 1: # write a qualitative representation of results
       f.write("SMS: {0}\n".format("".join(sym_sms)))
       f.write("PRD: {0}\n".format("".join(sym_pred)))
@@ -164,6 +177,7 @@ for fold in xrange(folds):
       f.write("\n")
   f.close()
   plot(preva, prevu, fold)
+  
   if 1: # print quantitative evaluation
     f = open(path2eval+"/quan_out_"+str(fold),"wb")
     f.write("\n\033[4mfold {0}\033[0;0m".format(fold))
@@ -177,6 +191,10 @@ for fold in xrange(folds):
     f.write("{0:40} {1:.3f}\n".format("fold correct substitution prediction", idx_subs_a/all_subs_a*100))
     f.write("\n")
     f.write("{0:40} {1:.3f}\n".format("fold accuracy", (idx_same_a+idx_subs_a)/(all_same_a+all_subs_a)*100))
+    f.write("\n")
+    f.write("{0:50} {1:.3f}".format("complete-sentence prediction", fsent/nsent*100))
+    f.write("\n")
+    f.write("{0:50} {1:.3f}".format("marker free complete-sentence prediction", rf_sent/nsent*100))
 
     print "\n\033[4mfold {0}\033[0;0m".format(fold)
     print "\n"

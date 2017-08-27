@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Created on MAY 18 2017
 
@@ -50,6 +49,7 @@ def chunks(l, n):
         yield l[i:i+n]
 
 location = sys.argv[1]        
+mode = sys.argv[2]
 db = ["/sms", "/en"]
 orig_file1 = location + db[0]
 orig_file2 = location + db[1]
@@ -80,8 +80,12 @@ lines_o2 = []
 for line in f.readlines():
     line = line.lower()
     line = line.replace("\n", "")
-    all_sym.extend(list(line))
-    lines_o2.append(line)
+    if mode == '1':
+      all_sym.extend(list(line))
+      lines_o2.append(line)
+    else: 
+      all_sym.extend(line.split())
+      lines_o2.append(line.split())
 
 en2num, num2en = dict_it(all_sym)
 uniq2 = list(set(all_sym))
@@ -114,7 +118,10 @@ for i, (ls1, ls2) in enumerate(zip(file1,file2)):
         line1 = list(line1.lower())
         line1.append("</s>")
         l1 = ltr2digit(line1, sms2num)# list of lists
-        line2 = list(line2.lower())
+        if mode == 1:
+          line2 = list(line2.lower())
+        else:
+          line2 = [elem.lower() for elem in line2]
         line2.append("</s>")
         l2 = encodeHot(line2, en2num)
         lst1.append(l1)

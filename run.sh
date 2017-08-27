@@ -8,10 +8,10 @@
 #The script assumes keras environment under tensorflow
 
 # Determine your input files of paralell corpus
-path2sms="../../align/Bleualign/outputfile-s"
-path2en="../../align/Bleualign/outputfile-t"
+path2sms=../../preprocess/new_sms2.txt
+path2en=../../preprocess/new_en2.txt
 # apply edit distance alignenmet
-edit='no'
+edit='intruc'
 
 # make dirs
 dir='db'
@@ -23,7 +23,7 @@ mkdir -p $results_dir
 mkdir -p imgs
 
 # align data
-if [ $edit == 'yes' ]; then
+if [ $edit == 'align' ]; then
   # edit.py aligns the data and process_edit.py split it to 2 corpuses
   # it generate db folder with the output of both sms and english texts
   echo '---------------------------'
@@ -34,15 +34,38 @@ if [ $edit == 'yes' ]; then
   echo 'Split to seperate sms and english files'
   echo '---------------------------------------'
   cat $dir/out | python preprocess/process_edit.py $dir
+  #split_DB.py splits the corpuses to 5 folds and extract the number of unique symbols for each of the corpuses
+  echo '---------------'
+  echo 'Five Fold Split'
+  echo '---------------'
+  python aligned_corpus/split_DB.py $dir 1 | grep -oh '[0-9][0-9]*' > sym_count
+
+elif [ $edit == 'intruc' ]; then
+  # edit.py aligns the data and process_edit.py split it to 2 corpuses
+  # it generate db folder with the output of both sms and english texts
+  echo '---------------------------'
+  echo 'Align sms to english corpus'
+  echo '---------------------------'
+  python3 preprocess/edit.py $path2sms $path2en > $dir/out
+  echo '---------------------------------------'
+  echo 'Split to seperate sms and edit intruction files'
+  echo '---------------------------------------'
+  cat $dir/out | python preprocess/process_op.py $dir
+  #split_DB.py splits the corpuses to 5 folds and extract the number of unique symbols for each of the corpuses
+  echo '---------------'
+  echo 'Five Fold Split'
+  echo '---------------'
+  python aligned_corpus/split_DB.py $dir 0 | grep -oh '[0-9][0-9]*' > sym_count
+
 else
   python preprocess/non_algn_preprocess.py $path2sms $path2en $dir
+  #split_DB.py splits the corpuses to 5 folds and extract the number of unique symbols for each of the corpuses
+  echo '---------------'
+  echo 'Five Fold Split'
+  echo '---------------'
+  python aligned_corpus/split_DB.py $dir 1 | grep -oh '[0-9][0-9]*' > sym_count
 fi
 
-#split_DB.py splits the corpuses to 5 folds and extract the number of unique symbols for each of the corpuses
-echo '---------------'
-echo 'Five Fold Split'
-echo '---------------'
-python aligned_corpus/split_DB.py $dir | grep -oh '[0-9][0-9]*' > sym_count
 sed -n 1p sym_count > sms_sym
 sed -n 2p sym_count > en_sym
 rm sym_count
@@ -54,7 +77,6 @@ echo '-----'
 python aligned_corpus/train.py $dir $model_dir sms_sym en_sym
 rm sms_sym
 rm en_sym
-
 # evaluate
 echo '--------'
 echo 'Evaluate'

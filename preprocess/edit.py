@@ -76,7 +76,7 @@ def align(word_1, word_2, bt):
                 w_2_letter = word_2[j_0]
                 op = "s"
         elif i_0 == i_1:  # insertion
-            w_1_letter = "&"
+            w_1_letter = "#"
             w_2_letter = word_2[j_0]
             op = "i"
         else: #  j_0 == j_1,  deletion
@@ -136,7 +136,10 @@ else:
   enf = open(enfile, "r")
   for sms_sen, en_sen in zip(smsf, enf):
     sms_sen = sms_sen.lower()
+    sms_sen = sms_sen.strip()
     sms_sen = sms_sen.replace(" ", "^")
+    en_sen = en_sen.lower()
+    en_sen = en_sen.strip()
     en_sen = en_sen.replace(" ", "^")
     # the "replace" above makes spaces a symbol
     #sms_sen = "im^gonna^go"
